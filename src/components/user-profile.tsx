@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { Star, Award, TrendingUp, Heart, MessageCircle, Calendar, Edit, Trophy, Zap, Target } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Star, Award, TrendingUp, Heart, MessageCircle, Calendar, Edit, Trophy, Zap, Target, Link as LinkIcon, Wallet } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -79,6 +79,27 @@ const levelTitles = {
 
 export function UserProfile({ user }: UserProfileProps) {
   const [activeTab, setActiveTab] = useState('overview');
+  const referralCode = user?.referralCode || 'GLOWUP';
+  const referralLink = `${window.location.origin}?ref=${referralCode}`;
+  const [referrals, setReferrals] = useState<{ email: string; joinedAt: string; reward: number }[]>(() => {
+    // Dummy referrals list stored locally
+    const stored = localStorage.getItem('glowup:referrals');
+    return stored ? JSON.parse(stored) : [
+      { email: 'friend1@example.com', joinedAt: '2025-09-15', reward: 5 },
+      { email: 'friend2@example.com', joinedAt: '2025-09-28', reward: 5 }
+    ];
+  });
+  const totalReferralEarnings = referrals.reduce((sum, r) => sum + r.reward, 0);
+  const [walletBalance, setWalletBalance] = useState<number>(() => {
+    const v = localStorage.getItem('glowup:wallet');
+    return v ? parseFloat(v) : 0;
+  });
+
+  const simulatePayout = () => {
+    const newBalance = walletBalance + totalReferralEarnings;
+    setWalletBalance(newBalance);
+    localStorage.setItem('glowup:wallet', newBalance.toString());
+  };
   
   const progressToNextLevel = ((stats.totalPoints - (stats.level - 1) * 150) / 150) * 100;
   const currentLevelTitle = levelTitles[stats.level as keyof typeof levelTitles] || 'Master';
@@ -176,6 +197,68 @@ export function UserProfile({ user }: UserProfileProps) {
             </Card>
           </motion.div>
         ))}
+      </motion.div>
+
+      {/* Referral Program */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="mb-8"
+      >
+        <Card className="bg-black/20 backdrop-blur-lg border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <Wallet className="w-5 h-5 text-blue-400" />
+              Earn by Referring Friends
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+              <div className="flex-1">
+                <div className="text-sm text-gray-300 mb-1">Your referral link</div>
+                <div className="flex items-center gap-2 p-2 rounded-md bg-[#1B1D22] border border-white/10">
+                  <LinkIcon className="w-4 h-4 text-blue-400" />
+                  <span className="truncate text-gray-200">{referralLink}</span>
+                </div>
+              </div>
+              <Button
+                onClick={() => { navigator.clipboard.writeText(referralLink); }}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Copy Link
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Card className="bg-black/10 border-white/10">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-white mb-1">{referrals.length}</div>
+                  <div className="text-sm text-gray-400">Referrals</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-black/10 border-white/10">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-white mb-1">${totalReferralEarnings.toFixed(2)}</div>
+                  <div className="text-sm text-gray-400">Earnings</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-black/10 border-white/10">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-white mb-1">${walletBalance.toFixed(2)}</div>
+                  <div className="text-sm text-gray-400">Wallet</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="text-sm text-gray-400">You earn $5 for each friend who joins. Payouts are simulated in demo mode.</div>
+
+            <div>
+              <Button onClick={simulatePayout} className="bg-blue-600 hover:bg-blue-700">
+                Transfer Earnings to Wallet
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* Detailed Stats */}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Star, TrendingUp, Users, Award, Search, Filter, Plus, User, LogOut, Home, UserPlus } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
@@ -20,8 +20,7 @@ import { UserProfile } from './components/user-profile';
 import { Leaderboard } from './components/leaderboard';
 import { PostRequest } from './components/post-request';
 import { HealthCheck } from './components/health-check';
-import { supabase } from './utils/supabase/client';
-import { projectId, publicAnonKey } from './utils/supabase/info';
+// Supabase auth removed. We now use a lightweight local dummy auth stored in localStorage.
 import { isDevelopment } from './utils/env';
 
 // Auth Context
@@ -51,95 +50,68 @@ function App() {
   const [showPostModal, setShowPostModal] = useState(false);
 
   useEffect(() => {
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        setCurrentView('feed');
-      }
-      setLoading(false);
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        setCurrentView('feed');
-      } else {
-        setCurrentView('landing');
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    // Dummy auth bootstrap: load from localStorage or create guest
+    const stored = localStorage.getItem('glowup:user');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setUser(parsed);
+      } catch {}
+    } else {
+      const guest = {
+        id: 'guest',
+        email: 'guest@glowup.app',
+        user_metadata: { username: 'guest' },
+        referralCode: Math.random().toString(36).slice(2, 8).toUpperCase()
+      };
+      localStorage.setItem('glowup:user', JSON.stringify(guest));
+      setUser(guest);
+    }
+    setLoading(false);
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({ 
-        email, 
-        password 
-      });
-      
-      if (error) {
-        console.error('Sign in error:', error);
-        throw new Error(error.message);
-      }
-      
-      if (data.user) {
-        setShowAuthModal(false);
-        toast('Welcome back to GlowUp! ✨');
-      }
-    } catch (error: any) {
-      console.error('Sign in failed:', error);
-      throw error;
-    }
+    // Dummy sign-in just stores a user shell
+    const dummy = {
+      id: 'user-' + Date.now(),
+      email,
+      user_metadata: { username: email.split('@')[0] },
+      referralCode: Math.random().toString(36).slice(2, 8).toUpperCase()
+    };
+    localStorage.setItem('glowup:user', JSON.stringify(dummy));
+    setUser(dummy);
+    setShowAuthModal(false);
+    setCurrentView('feed');
+    toast('Welcome back to GlowUp! ✨');
   };
 
   const signUp = async (email: string, password: string, username: string) => {
-    try {
-      // Call our server endpoint for signup
-      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-40db5d3a/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`
-        },
-        body: JSON.stringify({ email, password, username })
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Signup error response:', errorText);
-        throw new Error(errorText);
-      }
-
-      const result = await response.json();
-      console.log('Signup successful:', result);
-
-      // Now sign in the user
-      const { data, error } = await supabase.auth.signInWithPassword({ 
-        email, 
-        password 
-      });
-
-      if (error) {
-        console.error('Auto sign in after signup failed:', error);
-        throw new Error(`Account created but sign in failed: ${error.message}`);
-      }
-
-      setShowAuthModal(false);
-      toast('Welcome to GlowUp! Your glow-up journey starts now! 🌟');
-    } catch (error: any) {
-      console.error('Signup failed:', error);
-      throw error;
-    }
+    // Dummy sign-up creates local user
+    const dummy = {
+      id: 'user-' + Date.now(),
+      email,
+      user_metadata: { username },
+      referralCode: Math.random().toString(36).slice(2, 8).toUpperCase()
+    };
+    localStorage.setItem('glowup:user', JSON.stringify(dummy));
+    setUser(dummy);
+    setShowAuthModal(false);
+    setCurrentView('feed');
+    toast('Welcome to GlowUp! Your glow-up journey starts now! 🌟');
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    localStorage.removeItem('glowup:user');
+    const guest = {
+      id: 'guest',
+      email: 'guest@glowup.app',
+      user_metadata: { username: 'guest' },
+      referralCode: Math.random().toString(36).slice(2, 8).toUpperCase()
+    };
+    localStorage.setItem('glowup:user', JSON.stringify(guest));
+    setUser(guest);
     setCurrentView('landing');
-    toast('See you later! Keep glowing ✨');
+    toast('Signed out. Browsing as guest ✨');
   };
 
   const authContextValue = {
@@ -164,7 +136,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={authContextValue}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-[#0f1115] via-[#121418] to-[#0f1115]">
         {/* Navigation */}
         {user && (
           <motion.nav 
@@ -244,7 +216,7 @@ function App() {
               </motion.div>
             )}
             
-            {currentView === 'feed' && user && (
+            {currentView === 'feed' && (
               <motion.div
                 key="feed"
                 initial={{ opacity: 0 }}
@@ -255,7 +227,7 @@ function App() {
               </motion.div>
             )}
             
-            {currentView === 'profile' && user && (
+            {currentView === 'profile' && (
               <motion.div
                 key="profile"
                 initial={{ opacity: 0 }}
@@ -266,7 +238,7 @@ function App() {
               </motion.div>
             )}
             
-            {currentView === 'leaderboard' && user && (
+            {currentView === 'leaderboard' && (
               <motion.div
                 key="leaderboard"
                 initial={{ opacity: 0 }}
@@ -279,7 +251,7 @@ function App() {
           </AnimatePresence>
         </main>
 
-        {/* Auth Modal */}
+        {/* Auth Modal remains available to claim a username, but app is fully accessible without login */}
         <AuthModal 
           open={showAuthModal} 
           onOpenChange={setShowAuthModal}

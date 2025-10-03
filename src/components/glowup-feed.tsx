@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, Share2, ChevronUp, Filter, Search, Sparkles, Star, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Button } from './ui/button';
@@ -10,7 +10,6 @@ import { Separator } from './ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Textarea } from './ui/textarea';
 import { toast } from 'sonner@2.0.3';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
 
 interface GlowUpRequest {
   id: string;
@@ -106,6 +105,19 @@ export function GlowUpFeed() {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedResponses, setExpandedResponses] = useState<Set<string>>(new Set());
   const [newResponse, setNewResponse] = useState<{ [key: string]: string }>({});
+  const [referralLink, setReferralLink] = useState<string>('');
+
+  useEffect(() => {
+    // Build referral link from stored user or guest
+    try {
+      const stored = localStorage.getItem('glowup:user');
+      const user = stored ? JSON.parse(stored) : null;
+      const code = user?.referralCode || 'GLOWUP';
+      setReferralLink(`${window.location.origin}?ref=${code}`);
+    } catch {
+      setReferralLink(window.location.origin);
+    }
+  }, []);
 
   const filteredRequests = requests.filter(request => {
     const matchesFilter = filter === 'all' || request.category === filter;
@@ -172,6 +184,28 @@ export function GlowUpFeed() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Referral CTA */}
+      <motion.div
+        initial={{ y: -10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="mb-6"
+      >
+        <Card className="bg-[#1B1D22] border-white/10">
+          <CardContent className="p-4 flex flex-col md:flex-row md:items-center gap-3">
+            <div className="flex-1">
+              <div className="text-sm text-gray-300">Earn rewards by referring friends</div>
+              <div className="text-xs text-gray-400 truncate">{referralLink}</div>
+            </div>
+            <Button
+              onClick={() => { navigator.clipboard.writeText(referralLink); toast('Referral link copied'); }}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Copy Referral Link
+            </Button>
+          </CardContent>
+        </Card>
+      </motion.div>
+
       {/* Header */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}

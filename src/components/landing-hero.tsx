@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, TrendingUp, Heart, Star, Users, Award } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';

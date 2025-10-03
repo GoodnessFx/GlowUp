@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -9,7 +9,7 @@ import { Separator } from './ui/separator';
 import { Sparkles, Mail, Lock, User } from 'lucide-react';
 import { useAuth } from '../App';
 import { toast } from 'sonner@2.0.3';
-import { supabase } from '../utils/supabase/client';
+// Supabase OAuth removed for dummy auth mode
 
 interface AuthModalProps {
   open: boolean;
@@ -46,26 +46,9 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     }
   };
 
-  const handleSocialAuth = async (provider: 'twitter' | 'pinterest') => {
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: provider as any,
-        options: {
-          redirectTo: `${window.location.origin}`,
-        },
-      });
-
-      if (error) {
-        toast.error(`Failed to connect with ${provider === 'twitter' ? 'X' : 'Pinterest'}: ${error.message}`);
-      } else {
-        toast.success(`Connecting with ${provider === 'twitter' ? 'X' : 'Pinterest'}...`);
-      }
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
+  const handleSocialAuth = async (_provider: 'twitter' | 'pinterest') => {
+    // In dummy mode, just show a toast
+    toast.info('Social sign-in is disabled in demo mode.');
   };
 
   return (
