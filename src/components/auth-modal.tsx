@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Separator } from './ui/separator';
 import { Sparkles, Mail, Lock, User } from 'lucide-react';
 import { useAuth } from '../App';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 // Supabase OAuth removed for dummy auth mode
 
 interface AuthModalProps {

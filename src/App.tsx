@@ -11,7 +11,7 @@ import { Textarea } from './components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import { Separator } from './components/ui/separator';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { Toaster } from './components/ui/sonner';
 import { LandingHero } from './components/landing-hero';
 import { AuthModal } from './components/auth-modal';
@@ -136,7 +136,15 @@ function App() {
 
   return (
     <AuthContext.Provider value={authContextValue}>
-      <div className="min-h-screen bg-gradient-to-br from-[#0f1115] via-[#121418] to-[#0f1115]">
+      <div className="relative min-h-screen bg-gradient-to-br from-[#0f1115] via-[#121418] to-[#0f1115] overflow-hidden">
+        {/* Pinterest-like soft imagery background with subtle blur and vignette */}
+        <div className="absolute inset-0 -z-10">
+          <div
+            className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2069&auto=format&fit=crop')] bg-cover bg-center opacity-30"
+          />
+          <div className="absolute inset-0 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/60" />
+        </div>
         {/* Navigation */}
         {user && (
           <motion.nav 
