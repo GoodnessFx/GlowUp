@@ -9,7 +9,6 @@ import { Separator } from './ui/separator';
 import { Sparkles, Mail, Lock, User } from 'lucide-react';
 import { useAuth } from '../App';
 import { toast } from 'sonner';
-// Supabase OAuth removed for dummy auth mode
 
 interface AuthModalProps {
   open: boolean;
@@ -47,24 +46,21 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   };
 
   const handleSocialAuth = async (_provider: 'twitter' | 'pinterest') => {
-    // In dummy mode, just show a toast
     toast.info('Social sign-in is disabled in demo mode.');
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-gradient-to-br from-gray-900 to-purple-900 border-purple-400/20 max-w-md">
+      <DialogContent className="bg-gray-900 border-gray-700 max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="flex items-center justify-center gap-2 text-2xl font-bold"
+              className="flex items-center justify-center gap-2 text-2xl font-bold text-black"
             >
-              <Sparkles className="w-6 h-6 text-purple-400" />
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Welcome to GlowUp
-              </span>
+              <Sparkles className="w-6 h-6 text-yellow-500" />
+              <span>Welcome to GlowUp</span>
             </motion.div>
           </DialogTitle>
           <DialogDescription className="text-center text-gray-300">
@@ -74,10 +70,10 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
 
         <Tabs defaultValue="signin" className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-black/20">
-            <TabsTrigger value="signin" className="data-[state=active]:bg-purple-500/20">
+            <TabsTrigger value="signin" className="data-[state=active]:bg-gray-800 text-white">
               Sign In
             </TabsTrigger>
-            <TabsTrigger value="signup" className="data-[state=active]:bg-purple-500/20">
+            <TabsTrigger value="signup" className="data-[state=active]:bg-gray-800 text-white">
               Sign Up
             </TabsTrigger>
           </TabsList>
@@ -124,7 +120,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                className="w-full bg-black text-white hover:bg-gray-800"
               >
                 {loading ? (
                   <motion.div
@@ -197,7 +193,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                className="w-full bg-black text-white hover:bg-gray-800"
               >
                 {loading ? (
                   <motion.div
@@ -213,14 +209,13 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
           </TabsContent>
         </Tabs>
 
-        {/* Social Authentication */}
         <div className="space-y-4 mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <Separator className="w-full bg-white/10" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-gradient-to-br from-gray-900 to-purple-900 px-2 text-gray-400">
+              <span className="bg-gray-900 px-2 text-gray-400">
                 Or continue with
               </span>
             </div>
@@ -231,11 +226,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
               variant="outline"
               onClick={() => handleSocialAuth('pinterest')}
               disabled={loading}
-              className="bg-black/20 border-white/10 text-white hover:bg-red-500/20 hover:border-red-400/30"
+              className="bg-black text-white border-gray-700 hover:bg-gray-700 hover:border-gray-500"
             >
-              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.374 0 0 5.374 0 12s5.374 12 12 12c.343 0 .682-.015 1.016-.043-.44-1.793-.44-4.086-.44-4.086-.44-.878-.44-1.757-.44-2.636V14.91c-.088-.878-.088-1.757-.088-2.636v-1.32c0-.878 0-1.757.088-2.636C12.88 6.56 13.759 5.68 14.64 4.8c.878-.88 1.756-1.758 2.635-2.636C16.396 1.283 15.517.404 14.638-.44c-.878-.845-1.757-1.725-2.636-2.604C11.123-.956 10.244-.077 9.364.803c-.88.88-1.758 1.759-2.636 2.638C5.85 4.32 4.97 5.2 4.09 6.08c-.88.88-1.758 1.759-2.636 2.638C.573 9.597-.306 10.476-.306 11.355v1.32c0 .878 0 1.757.088 2.636v1.32c0 .878 0 1.757.088 2.636.088.878.088 1.757.176 2.636v1.32c.088.878.176 1.757.264 2.636C1.189 21.736 2.949 23.054 5.108 23.78c.878.293 1.757.586 2.636.88C9.502 24.953 11.26 25 12 25c6.626 0 12-5.374 12-12S18.626 0 12 0z"/>
-              </svg>
               Pinterest
             </Button>
 
@@ -243,11 +235,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
               variant="outline"
               onClick={() => handleSocialAuth('twitter')}
               disabled={loading}
-              className="bg-black/20 border-white/10 text-white hover:bg-blue-500/20 hover:border-blue-400/30"
+              className="bg-black text-white border-gray-700 hover:bg-gray-700 hover:border-gray-500"
             >
-              <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-              </svg>
               X
             </Button>
           </div>

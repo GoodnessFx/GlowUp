@@ -53,9 +53,7 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
     setLoading(true);
     
     try {
-      // In a real app, this would make an API call to create the request
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       toast.success('Your glow-up request has been posted! 🌟');
       setForm({
         title: '',
@@ -67,7 +65,7 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
       });
       setImagePreview(null);
       onOpenChange(false);
-    } catch (error) {
+    } catch {
       toast.error('Failed to post request. Please try again.');
     } finally {
       setLoading(false);
@@ -89,18 +87,16 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-gradient-to-br from-gray-900 to-purple-900 border-purple-400/20 max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-black border-purple-400/20 max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="flex items-center justify-center gap-2 text-2xl font-bold"
+              className="flex items-center justify-center gap-2 text-2xl font-bold text-black"
             >
-              <Sparkles className="w-6 h-6 text-purple-400" />
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Post a GlowUp Request
-              </span>
+              <Sparkles className="w-6 h-6 text-black" />
+              <span>Post a GlowUp Request</span>
             </motion.div>
           </DialogTitle>
           <DialogDescription className="text-center text-gray-300">
@@ -117,21 +113,17 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
           {/* Category Selection */}
           <div className="space-y-3">
             <Label className="text-gray-200 flex items-center gap-2">
-              <Tag className="w-4 h-4" />
+              <Tag className="w-4 h-4 text-white" />
               Category *
             </Label>
             <div className="grid grid-cols-3 gap-3">
               {categories.map((category) => (
-                <motion.div
-                  key={category.value}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
+                <motion.div key={category.value} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Card
                     className={`cursor-pointer transition-all duration-200 ${
                       form.category === category.value
                         ? 'bg-gradient-to-r ' + category.color + ' border-transparent'
-                        : 'bg-black/20 border-white/10 hover:border-purple-400/50'
+                        : 'bg-black/30 border-white/10 hover:border-purple-400/50'
                     }`}
                     onClick={() => setForm({ ...form, category: category.value })}
                   >
@@ -148,7 +140,7 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
           {/* Title */}
           <div className="space-y-2">
             <Label htmlFor="title" className="text-gray-200 flex items-center gap-2">
-              <Type className="w-4 h-4" />
+              <Type className="w-4 h-4 text-white" />
               What do you need help with? *
             </Label>
             <Input
@@ -156,7 +148,7 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
               placeholder="e.g., Need affordable sneakers for daily wear"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="bg-black/20 border-white/10 text-white placeholder-gray-400"
+              className="bg-black/40 border-white/10 text-white placeholder-gray-400"
               required
             />
           </div>
@@ -164,7 +156,7 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
           {/* Description */}
           <div className="space-y-2">
             <Label htmlFor="description" className="text-gray-200 flex items-center gap-2">
-              <FileText className="w-4 h-4" />
+              <FileText className="w-4 h-4 text-white" />
               Tell us more details *
             </Label>
             <Textarea
@@ -172,7 +164,7 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
               placeholder="Describe your style, preferences, skin type, fitness goals, budget constraints, etc."
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="bg-black/20 border-white/10 text-white placeholder-gray-400 resize-none min-h-[100px]"
+              className="bg-black/40 border-white/10 text-white placeholder-gray-400 resize-none min-h-[100px]"
               required
             />
           </div>
@@ -181,10 +173,10 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
           <div className="space-y-2">
             <Label className="text-gray-200">Budget Range (Optional)</Label>
             <Select value={form.budget} onValueChange={(value) => setForm({ ...form, budget: value })}>
-              <SelectTrigger className="bg-black/20 border-white/10 text-white">
+              <SelectTrigger className="bg-black/40 border-white/10 text-white">
                 <SelectValue placeholder="Select your budget range" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-gray-700">
+              <SelectContent className="bg-[#1a1a1a] border-gray-700 text-white">
                 {budgetRanges.map((range) => (
                   <SelectItem key={range} value={range}>{range}</SelectItem>
                 ))}
@@ -200,14 +192,14 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
               placeholder="e.g., casual, comfortable, minimalist (separate with commas)"
               value={form.tags}
               onChange={(e) => setForm({ ...form, tags: e.target.value })}
-              className="bg-black/20 border-white/10 text-white placeholder-gray-400"
+              className="bg-black/40 border-white/10 text-white placeholder-gray-400"
             />
           </div>
 
           {/* Image Upload */}
           <div className="space-y-2">
             <Label className="text-gray-200 flex items-center gap-2">
-              <Upload className="w-4 h-4" />
+              <Upload className="w-4 h-4 text-white" />
               Add Image (Optional)
             </Label>
             <div className="border-2 border-dashed border-white/20 rounded-lg p-6 text-center hover:border-purple-400/50 transition-colors">
@@ -247,7 +239,7 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
               className="space-y-2"
             >
               <Label className="text-gray-200">Preview</Label>
-              <Card className="bg-black/20 border-white/10">
+              <Card className="bg-black/40 border-white/10">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-2">
                     {selectedCategory && (
@@ -285,16 +277,16 @@ export function PostRequest({ open, onOpenChange }: PostRequestProps) {
           <Button
             type="submit"
             disabled={loading || !form.title.trim() || !form.description.trim() || !form.category}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 py-3"
+            className="w-full bg-black hover:bg-gray-900 py-3 text-white border border-gray-700"
           >
             {loading ? (
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                 className="w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
               />
             ) : (
-              <Sparkles className="w-5 h-5 mr-2" />
+              <Sparkles className="w-5 h-5 mr-2 text-white" />
             )}
             {loading ? 'Posting Your Request...' : 'Post GlowUp Request'}
           </Button>

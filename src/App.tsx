@@ -156,7 +156,8 @@ function App() {
               <div className="flex items-center justify-between h-16">
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
-                  className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent cursor-pointer"
+                 className="text-2xl font-bold text-black cursor-pointer"
+
                   onClick={() => setCurrentView('feed')}
                 >
                   GlowUp
@@ -190,13 +191,14 @@ function App() {
                     <User className="w-4 h-4 mr-2" />
                     Profile
                   </Button>
-                  <Button
-                    onClick={() => setShowPostModal(true)}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Post Request
-                  </Button>
+                 <Button
+  onClick={() => setShowPostModal(true)}
+  className="!bg-black !text-white hover:!bg-gray-800"
+>
+  <Plus className="w-4 h-4 mr-2" />
+  Post Request
+</Button>
+
                   <Button
                     variant="ghost"
                     size="sm"
